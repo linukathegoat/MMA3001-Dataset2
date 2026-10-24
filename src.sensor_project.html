@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module src.sensor_project</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title"><a href="src.html" class="white">src</a>.sensor_project</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:/mnt/data/MMA3001_Dataset2_Project/src/sensor_project.py">/mnt/data/MMA3001_Dataset2_Project/src/sensor_project.py</a></td></tr></table>
+    <p><span class="code">Interpolation&nbsp;benchmarking&nbsp;on&nbsp;a&nbsp;building&nbsp;environmental&nbsp;temperature&nbsp;sensor.<br>
+&nbsp;<br>
+Data&nbsp;source:&nbsp;Monash&nbsp;MMA3001&nbsp;Dataset&nbsp;2&nbsp;environmental&nbsp;sensor&nbsp;CSV&nbsp;(inside&nbsp;ZIP).<br>
+Only&nbsp;the&nbsp;sensor's&nbsp;measurement&nbsp;Unix&nbsp;timestamp&nbsp;(in&nbsp;JSON),&nbsp;not&nbsp;the&nbsp;CSV&nbsp;createdate,<br>
+is&nbsp;used&nbsp;to&nbsp;determine&nbsp;when&nbsp;a&nbsp;reading&nbsp;was&nbsp;taken.<br>
+&nbsp;<br>
+Engineering&nbsp;scope:&nbsp;impute&nbsp;short,&nbsp;internal&nbsp;temperature&nbsp;gaps&nbsp;at&nbsp;one&nbsp;location.<br>
+Do&nbsp;not&nbsp;use&nbsp;for&nbsp;safety-critical&nbsp;environmental&nbsp;control&nbsp;or&nbsp;extrapolation.</span></p>
+<p>
+<table class="section">
+<tr class="decor pkg-content-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Modules</strong></td></tr>
+    
+<tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="csv.html">csv</a><br>
+<a href="io.html">io</a><br>
+</td><td class="multicolumn"><a href="json.html">json</a><br>
+<a href="numpy.html">numpy</a><br>
+</td><td class="multicolumn"><a href="pandas.html">pandas</a><br>
+<a href="time.html">time</a><br>
+</td><td class="multicolumn"><a href="zipfile.html">zipfile</a><br>
+</td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor functions-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Functions</strong></td></tr>
+    
+<tr><td class="decor functions-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl><dt><a name="-choose_by_validation_mae"><strong>choose_by_validation_mae</strong></a>(validation_summary: 'pd.DataFrame') -&gt; 'str'</dt><dd><span class="code">Choose&nbsp;before&nbsp;inspecting&nbsp;holdout&nbsp;results;&nbsp;equal&nbsp;weight&nbsp;per&nbsp;gap&nbsp;length.</span></dd></dl>
+ <dl><dt><a name="-evaluate"><strong>evaluate</strong></a>(
+    series: 'pd.DataFrame',
+    gap_lengths: 'tuple[int, ...]' = (3, 6, 12),
+    n_blocks: 'int' = 15,
+    seed: 'int' = 2026,
+    split_name: 'str' = 'validation'
+) -&gt; 'tuple[pd.DataFrame, pd.DataFrame, dict]'</dt><dd><span class="code">Mask&nbsp;genuine&nbsp;observed&nbsp;measurements;&nbsp;compare&nbsp;predictions&nbsp;to&nbsp;hidden&nbsp;truth.<br>
+&nbsp;<br>
+Returns&nbsp;per-method&nbsp;summary,&nbsp;individual&nbsp;predictions&nbsp;(for&nbsp;plots),&nbsp;and<br>
+example&nbsp;containing&nbsp;one&nbsp;gap&nbsp;plus&nbsp;method&nbsp;predictions.&nbsp;No&nbsp;observed&nbsp;target&nbsp;in<br>
+any&nbsp;gap&nbsp;is&nbsp;included&nbsp;in&nbsp;the&nbsp;interpolant's&nbsp;training&nbsp;values.</span></dd></dl>
+ <dl><dt><a name="-load_temperature"><strong>load_temperature</strong></a>(
+    zip_path: 'str | Path',
+    sensor_id: 'str' = '6012002000869',
+    date_start: 'str' = '2024-05-01',
+    date_end: 'str' = '2024-06-01'
+) -&gt; 'tuple[pd.DataFrame, dict]'</dt><dd><span class="code">Extract&nbsp;and&nbsp;audit&nbsp;one&nbsp;sensor's&nbsp;real&nbsp;readings&nbsp;from&nbsp;the&nbsp;supplied&nbsp;ZIP.<br>
+&nbsp;<br>
+Parameters<br>
+----------<br>
+zip_path:&nbsp;path&nbsp;to&nbsp;original&nbsp;5EnvSensor&nbsp;CSV&nbsp;ZIP&nbsp;(not&nbsp;the&nbsp;occupancy&nbsp;dataset).<br>
+sensor_id:&nbsp;sensor&nbsp;identifier&nbsp;matching&nbsp;the&nbsp;location&nbsp;spreadsheet&nbsp;(string).<br>
+date_start,&nbsp;date_end:&nbsp;UTC&nbsp;ISO&nbsp;date&nbsp;bounds,&nbsp;half-open&nbsp;[start,&nbsp;end).<br>
+&nbsp;<br>
+Returns<br>
+-------<br>
+(dataframe,&nbsp;audit):&nbsp;UTC&nbsp;timestamp&nbsp;and&nbsp;temperature_c,&nbsp;sorted&nbsp;and&nbsp;deduplicated;<br>
+diagnostic&nbsp;counts&nbsp;including&nbsp;repeated&nbsp;messages&nbsp;and&nbsp;discarded&nbsp;values.<br>
+&nbsp;<br>
+Raises<br>
+------<br>
+ValueError&nbsp;for&nbsp;empty/invalid&nbsp;study&nbsp;ranges;&nbsp;FileNotFoundError&nbsp;if&nbsp;ZIP&nbsp;missing.</span></dd></dl>
+ <dl><dt><a name="-predict"><strong>predict</strong></a>(
+    method: 'str',
+    observed_times: 'np.ndarray',
+    observed_values: 'np.ndarray',
+    query_times: 'np.ndarray'
+) -&gt; 'np.ndarray'</dt><dd><span class="code">Predict&nbsp;values&nbsp;only&nbsp;INSIDE&nbsp;observed&nbsp;time&nbsp;domain&nbsp;(no&nbsp;extrapolation).<br>
+&nbsp;<br>
+``last_known``&nbsp;uses&nbsp;previous&nbsp;observed&nbsp;value,&nbsp;``linear``&nbsp;uses&nbsp;straight&nbsp;lines,<br>
+``pchip``&nbsp;is&nbsp;shape-preserving&nbsp;cubic&nbsp;Hermite,&nbsp;and&nbsp;``cubic_spline``&nbsp;is&nbsp;natural<br>
+cubic&nbsp;spline.&nbsp;All&nbsp;timestamps&nbsp;are&nbsp;seconds;&nbsp;temperature&nbsp;values&nbsp;are&nbsp;°C.</span></dd></dl>
+ <dl><dt><a name="-select_masked_blocks"><strong>select_masked_blocks</strong></a>(
+    times: 'np.ndarray',
+    n_per_block: 'int',
+    n_blocks: 'int' = 15,
+    seed: 'int' = 2026,
+    max_observed_step_minutes: 'float' = 30.0
+) -&gt; 'list[np.ndarray]'</dt><dd><span class="code">Select&nbsp;disjoint,&nbsp;internally&nbsp;continuous&nbsp;test&nbsp;blocks&nbsp;with&nbsp;observed&nbsp;neighbours.<br>
+&nbsp;<br>
+``n_per_block``&nbsp;consecutive&nbsp;readings&nbsp;are&nbsp;hidden&nbsp;for&nbsp;each&nbsp;block.&nbsp;Candidates<br>
+are&nbsp;accepted&nbsp;only&nbsp;when&nbsp;all&nbsp;surrounding&nbsp;actual&nbsp;sampling&nbsp;steps&nbsp;are&nbsp;&lt;=30&nbsp;min.<br>
+This&nbsp;rejects&nbsp;gaps&nbsp;already&nbsp;present&nbsp;in&nbsp;the&nbsp;measured&nbsp;data.</span></dd></dl>
+</td></tr></table><p>
+<table class="section">
+<tr class="decor data-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Data</strong></td></tr>
+    
+<tr><td class="decor data-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><strong>METHODS</strong> = ('last_known', 'linear', 'pchip', 'cubic_spline')<br>
+<strong>MONTH_END_EXCLUSIVE_UTC</strong> = '2024-06-01'<br>
+<strong>MONTH_START_UTC</strong> = '2024-05-01'<br>
+<strong>SENSOR_ID</strong> = '6012002000869'<br>
+<strong>SENSOR_ROOM</strong> = 'Monash Building 60, G.38, Compactus_upper (label EMS107)'</td></tr></table>
+</body></html>

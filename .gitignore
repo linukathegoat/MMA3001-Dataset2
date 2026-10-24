@@ -1,0 +1,14 @@
+# Python and virtual environments
+__pycache__/
+.pytest_cache/
+*.pyc
+.venv/
+.ipynb_checkpoints/
+# Raw, local and potentially restricted measurements
+*.zip
+*.xlsx
+data/*.csv
+results/cleaned_temperature_LOCAL_ONLY.csv
+results/prediction_errors.csv
+# Temporary office and rendered files
+~$*.docx

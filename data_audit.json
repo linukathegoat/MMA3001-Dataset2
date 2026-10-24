@@ -1,0 +1,21 @@
+{
+  "sensor_id": "6012002000869",
+  "study_start_utc": "2024-05-01",
+  "study_end_exclusive_utc": "2024-06-01",
+  "sensor_rows": 29341,
+  "json_errors": 0,
+  "temperature_values_in_range": 4159,
+  "invalid_temperature_values": 0,
+  "conflicting_duplicates": 0,
+  "unique_measurements": 4155,
+  "repeated_messages_removed": 4,
+  "median_observed_interval_minutes": 10.0,
+  "observed_intervals_over_30_minutes": 0,
+  "minimum_temperature_c": 19.0,
+  "maximum_temperature_c": 25.5,
+  "actual_first_timestamp_utc": "2024-05-01T00:05:24+00:00",
+  "actual_last_timestamp_utc": "2024-05-31T23:55:36+00:00",
+  "validation_points": 2908,
+  "holdout_points": 1247,
+  "chosen_method_validation_only": "linear"
+}
