@@ -73,7 +73,7 @@ The target values used for validation are original sensor readings, while missin
 
 ## AI-use disclosure
 
-Generative AI (OpenAI ChatGPT) was used in a limited, assistive capacity throughout this project. Its use was restricted to modifying and refining specific code sections, debugging syntax errors, and brainstorming alternative approaches during development. The formulation of the research problem, choice of numerical methods (linear, PCHIP, and cubic splines), experimental design, and data interpretation were conceived and conducted by the author. All code was locally tested and verified, with the author reviewing and taking full responsibility for the implementation, automated test suite, and reported findings.
+OpenAI ChatGPT provided substantial assistance to debug and modify Python code, identify and fix errors, and to improve the technical report. However, all computational predictions and tests are generated from the source code and the supplied sensor archive. AI assistance is documented in the repository and written report.
 
 ## Source and licence
 
